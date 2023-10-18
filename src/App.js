@@ -12,7 +12,7 @@ function App() {
   
   const clear = () => {
     setAns('');
-    setInput('');
+    setInput("");
   };
   const addInput = val =>{
     if(opDone){
