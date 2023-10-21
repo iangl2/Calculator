@@ -4,94 +4,155 @@ import Key from './components/key.js';
 import { useState } from 'react';
 import { evaluate } from 'mathjs';
 
+
 function App() {
  
-  const [input, setInput] = useState('');
-  const [ans, setAns]= useState('');
+  const [expression, setExpression] = useState('');
+  const [answer, setAnswer]= useState('');
+  const et = expression.trim();
   const [opDone, setOpDone]=useState(false);
+
   
-  const clear = () => {
-    setAns('');
-    setInput("");
+  const isOperator = (symbol) => {
+    if (symbol ==='*'||symbol ==='/'||symbol ==='+'||symbol ==='-') {
+      return true;
+    }
+    else{
+      return false;
+    }
   };
-  const addInput = val =>{
+ 
+  const clear = () => {
+    setAnswer('0');
+    setExpression("");
+  };
+
+  const addInput = (symbol) => {
     if(opDone){
-      if(isNaN(val)){
-        setInput(ans+val);
+      if(isOperator(symbol)){
+        setExpression(answer+symbol);
         
       }
       else{
-        setInput(val);
+        setExpression(symbol);
       }
-      setAns(val);
+      setAnswer(symbol);
       setOpDone(false); 
     }
+
     else{
-      if( isNaN(ans[0]) || isNaN(val)){
-        setAns(val);
-        setInput(input+val);
+    if (isOperator(symbol)) {
+      setExpression(et + " " + symbol + " ");
+      setAnswer(symbol);
+    }else if (symbol === "=") {
+      calculate();
+    } else if (symbol === "0") {
+      if (expression.charAt(0) !== "0") {
+        setExpression(expression + symbol);
+        setAnswer(expression+symbol);
       }
-      else{
-        setInput(input+val);
-        setAns(ans + val);
+    } else if (symbol === ".") {
+      // split by operators and get last number
+      const lastNumber = expression.split(/[-+/*]/g).pop();
+      if (!lastNumber) return;
+      console.log("lastNumber :>> ", lastNumber);
+      // if last number already has a decimal, don't add another
+      if (lastNumber?.includes(".")) return;
+      setExpression(expression + symbol);
+      setAnswer(expression+symbol);
+    } else {
+      if (expression.charAt(0) === "0") {
+        setExpression(expression.slice(1) + symbol);
+        setAnswer(expression+symbol);
+      } else {
+        setExpression(expression + symbol);
+        setAnswer(expression+symbol);
       }
+      
     }
+  }
   };
     
 
-  const calculateResult = () => {
-    if (input) {
-      setAns(evaluate(input));
-      
-      setInput(input + "="+evaluate(input))
-     setOpDone(true);
-     console.log(ans);
-    } else {
-      alert("");
+  const calculate = () => {
+    // if last char is an operator, do nothing
+    if (isOperator(et.charAt(et.length - 1))) return;
+    // clean the expression so that two operators in a row uses the last operator
+    // 5 * - + 5 = 10
+    const parts = et.split(" ");
+    const newParts = [];
+
+    // go through parts backwards
+    for (let i = parts.length - 1; i >= 0; i--) {
+      if (["*", "/", "+"].includes(parts[i]) && isOperator(parts[i - 1])) {
+        newParts.unshift(parts[i]);
+        let j = 0;
+        let k = i - 1;
+        while (isOperator(parts[k])) {
+          k--;
+          j++;
+        }
+        i -= j;
+      } else {
+        newParts.unshift(parts[i]);
+      }
     }
+    const newExpression = newParts.join(" ");
+    if (isOperator(newExpression.charAt(0))) {
+      setAnswer(evaluate(answer + newExpression));
+      
+    } else {
+      setAnswer(evaluate(newExpression));
+    }
+    setOpDone(true); 
+    setExpression("");
   };
+
+
   
   return (
     <div className="App">
      <div id="calculator">
         
-        <div id="screen">
-            
+        <div id="input">
+        
             <div id="expression">
-            <p> {input}</p>
+            <p> {expression} </p>
             </div>
             
-            <div id="input">
-              {ans}
+            <div id="display">
+           
+            {answer} 
+             
             </div>
            
         </div>
        
         <div id="keyboard">
-        <Key manageClick={clear}>AC</Key>
-          <Key manageClick={addInput}>/</Key>
-          <Key manageClick={addInput}>*</Key>
+        <Key manageClick={clear} identifier="clear">AC</Key>
+          <Key manageClick={addInput} identifier="divide">/</Key>
+          <Key manageClick={addInput} identifier="multiply">*</Key>
         
           
           
           
-          <Key manageClick={addInput}>7</Key>
-         <Key manageClick={addInput}>8</Key>
-         <Key manageClick={addInput}>9</Key>
-         <Key manageClick={addInput}>-</Key>
+          <Key manageClick={addInput} identifier="seven">7</Key>
+         <Key manageClick={addInput} identifier="eight">8</Key>
+         <Key manageClick={addInput} identifier="nine">9</Key>
+         <Key manageClick={addInput} identifier="subtract">-</Key>
         
           
-            <Key manageClick={addInput}>4</Key>
-         <Key manageClick={addInput}>5</Key>
-         <Key manageClick={addInput}>6</Key>
-         <Key manageClick={addInput}>+</Key>
-         <Key manageClick={calculateResult}>=</Key>
+            <Key manageClick={addInput} identifier="four">4</Key>
+         <Key manageClick={addInput} identifier="five">5</Key>
+         <Key manageClick={addInput} identifier="six">6</Key>
+         <Key manageClick={addInput} identifier="add">+</Key>
+         <Key identifier="equals" manageClick={addInput}>=</Key>
           <div id="bundle">
-        <Key manageClick={addInput}>1</Key>
-         <Key manageClick={addInput}>2</Key>
-         <Key manageClick={addInput}>3</Key>
-         <Key manageClick={addInput}>0</Key>
-         <Key manageClick={addInput}>.</Key>
+        <Key manageClick={addInput} identifier="one">1</Key>
+         <Key manageClick={addInput} identifier="two">2</Key>
+         <Key manageClick={addInput} identifier="three">3</Key>
+         <Key manageClick={addInput} identifier="zero">0</Key>
+         <Key manageClick={addInput} identifier="decimal">.</Key>
          </div>
          
           
