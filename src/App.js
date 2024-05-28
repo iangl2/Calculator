@@ -8,7 +8,7 @@ import { evaluate } from 'mathjs';
 function App() {
  
   const [expression, setExpression] = useState('');
-  const [answer, setAnswer]= useState('');
+  const [answer, setAnswer]= useState('0');
   const et = expression.trim();
   const [opDone, setOpDone]=useState(false);
 
@@ -117,43 +117,42 @@ function App() {
         <div id="input">
         
             <div id="expression">
-            <p> {expression} </p>
+            {expression} 
             </div>
             
             <div id="display">
-           
             {answer} 
-             
             </div>
            
         </div>
        
         <div id="keyboard">
+
+        {/* first row  */}
+
         <Key manageClick={clear} identifier="clear">AC</Key>
-          <Key manageClick={addInput} identifier="divide">/</Key>
-          <Key manageClick={addInput} identifier="multiply">*</Key>
+        <Key manageClick={addInput} identifier="divide">/</Key>
+        <Key manageClick={addInput} identifier="multiply">*</Key>
+        {/* second row */}
+        <Key manageClick={addInput} identifier="seven">7</Key>
+        <Key manageClick={addInput} identifier="eight">8</Key>
+        <Key manageClick={addInput} identifier="nine">9</Key>
+        <Key manageClick={addInput} identifier="subtract">-</Key>
+        {/* third row */}
+        <Key manageClick={addInput} identifier="four">4</Key>
+        <Key manageClick={addInput} identifier="five">5</Key>
+        <Key manageClick={addInput} identifier="six">6</Key>
+        <Key manageClick={addInput} identifier="add">+</Key>
         
-          
-          
-          
-          <Key manageClick={addInput} identifier="seven">7</Key>
-         <Key manageClick={addInput} identifier="eight">8</Key>
-         <Key manageClick={addInput} identifier="nine">9</Key>
-         <Key manageClick={addInput} identifier="subtract">-</Key>
+        <Key manageClick={addInput} identifier="equals" >=</Key>
+
         
-          
-            <Key manageClick={addInput} identifier="four">4</Key>
-         <Key manageClick={addInput} identifier="five">5</Key>
-         <Key manageClick={addInput} identifier="six">6</Key>
-         <Key manageClick={addInput} identifier="add">+</Key>
-         <Key identifier="equals" manageClick={addInput}>=</Key>
-          <div id="bundle">
         <Key manageClick={addInput} identifier="one">1</Key>
-         <Key manageClick={addInput} identifier="two">2</Key>
-         <Key manageClick={addInput} identifier="three">3</Key>
-         <Key manageClick={addInput} identifier="zero">0</Key>
-         <Key manageClick={addInput} identifier="decimal">.</Key>
-         </div>
+        <Key manageClick={addInput} identifier="two">2</Key>
+        <Key manageClick={addInput} identifier="three">3</Key>
+        <Key manageClick={addInput} identifier="zero">0</Key>
+        <Key manageClick={addInput} identifier="decimal">.</Key>
+        
          
           
         
